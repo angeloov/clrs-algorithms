@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int merge(vector<int> &A, int p, int q, int r) {
+void merge(vector<int> &A, int p, int q, int r) {
 	int nl = q - p + 1; // length of A[p:q]
 	int nr = r - q;  // length of A[q+1:r]
 
@@ -25,7 +25,6 @@ int merge(vector<int> &A, int p, int q, int r) {
 		} else {
 			A[k] = R[j];
 			j++;
-			inversions++;
 		}
 
 		k++;
@@ -42,29 +41,24 @@ int merge(vector<int> &A, int p, int q, int r) {
 		j++;
 		k++;
 	}
-
-	return inversions;
 }
 
-int merge_sort(vector<int> &a, int p, int r) {
-	if (p < r) {
-		int q = floor((p+r)/2); // Midpoint of A[p:r]
+void merge_sort(vector<int> &a, int p, int r) {
+	if (p >= r) return;
 
-		int left = merge_sort(a, p, q); // recursively sort A[p:q]
-		int right = merge_sort(a, q+1, r); // recursively sort A[q+1:r]
+	int q = floor((p+r)/2); // Midpoint of A[p:r]
 
-		// merge A[p:q] and A[q+1:r] into A[p:r]
-		int inv = merge(a, p, q, r) + left + right; 
-		return inv;
-	} else {
-		return 0;
-	}
+	merge_sort(a, p, q); // recursively sort A[p:q]
+	merge_sort(a, q+1, r); // recursively sort A[q+1:r]
+	
+	// merge A[p:q] and A[q+1:r] into A[p:r]
+	merge(a, p, q, r);
 }
 
 int main() {
 	vector<int> A = {3, 2, 1};
 	int a = 0, b = A.size();
-	cout << "#inversions = " << merge_sort(A, a, b-1) << endl;
+	merge_sort(A, a, b);
 
 	for (int el : A) cout << el << " ";
 	cout << endl;
